@@ -12,13 +12,13 @@ class SettingsViewController: UIViewController {
     var db : OpaquePointer?
     @IBOutlet weak var notificationTime: UIDatePicker!
     @IBOutlet weak var stateSwitch: UISwitch!
-    //var offSwitch = "switchIsOFF"
+    
     var switchAction = ""
     var selectedTime = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         let stausOfSwitch = UserDefaults.standard.string(forKey:Constants.isEnable)
-        print("status of the switch \(String(describing: stausOfSwitch))")
+
         if(stausOfSwitch == "isEnable"){
             pushNotification()
             stateSwitch.setOn(true, animated:true)
@@ -35,6 +35,7 @@ class SettingsViewController: UIViewController {
         dateFormatter.dateFormat = "HH:mm"
         selectedTime = dateFormatter.string(from: notificationTime.date)
         UserDefaults.standard.set(selectedTime, forKey: Constants.KEYTIME)
+      
         pushNotification()
     }
    
@@ -68,22 +69,8 @@ class SettingsViewController: UIViewController {
         content.body = "Check the new Weahter Updates"
         content.sound = .default
         
-       
-        let hh = selectedTime.prefix(2)
-        let mm = selectedTime.suffix(2)
-        //Timing
-        
-        var dateComponent = DateComponents()
-        dateComponent.hour = Int(hh)
-        dateComponent.minute = Int(mm)
-
-       
-        
-        //let date = Date().addingTimeInterval(15)
-        
-        let timeTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
-        //let dateComponent = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-       // let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponent, repeats: true)
+        let dateComponent = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationTime.date)
+        let timeTrigger = UNCalendarNotificationTrigger(dateMatching: dateComponent, repeats: true)
         
         //Request
         
@@ -94,6 +81,7 @@ class SettingsViewController: UIViewController {
         
         center.add(request) { (error) in
             //check the error parameter and handle any errors
+            print("Error in notifcations")
         }
         
         
